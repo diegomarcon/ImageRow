@@ -69,9 +69,13 @@ protocol ImageRowProtocol {
 
 //MARK: Row
 
-open class _ImageRow<VCType: TypedRowControllerType, Cell: CellType>: SelectorRow<Cell, VCType>, ImageRowProtocol where VCType: UIImagePickerController, VCType.RowValue == UIImage, Cell: BaseCell, Cell: TypedCellType, Cell.Value == UIImage {
+open class _ImageRow<Cell: CellType>: OptionsRow<Cell>, PresenterRowType where Cell: BaseCell, Cell.Value == UIImage {
+    public var presentationMode: PresentationMode<ImagePickerController>?
     
-
+    public var onPresentCallback: ((FormViewController, ImagePickerController) -> Void)?
+    
+    public typealias PresentedControllerType = ImagePickerController
+    
     open var sourceTypes: ImageRowSourceTypes
     open var imageURL: URL?
     open var clearAction = ImageClearAction.yes(style: .destructive)
@@ -82,7 +86,7 @@ open class _ImageRow<VCType: TypedRowControllerType, Cell: CellType>: SelectorRo
     public required init(tag: String?) {
         sourceTypes = .All
         super.init(tag: tag)
-        presentationMode = .presentModally(controllerProvider: ControllerProvider.callback { return VCType() }, onDismiss: { [weak self] vc in
+        presentationMode = .presentModally(controllerProvider: ControllerProvider.callback { return ImagePickerController() }, onDismiss: { [weak self] vc in
             self?.select()
             vc.dismiss(animated: true)
             })
@@ -192,11 +196,12 @@ extension _ImageRow {
     
 }
 
-/// A selector row where the user can pick an image
-public final class ImageRow : _ImageRow<ImagePickerController, ImageCell>, RowType {
-    
+// A selector row where the user can pick an image
+public final class ImageRow : _ImageRow<ImageCell>, RowType {
+
     public required init(tag: String?) {
         super.init(tag: tag)
     }
-    
+
 }
+

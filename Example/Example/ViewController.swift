@@ -42,7 +42,7 @@ class ViewController: FormViewController {
 }
 
 /// CustomPickerController: a selector row where the user can pick an image and edit it then of the selection
-public final class MyImageRow : _ImageRow<CustomPickerController, MyImageCell>, RowType {
+public final class MyImageRow : _ImageRow<MyImageCell>, RowType {
     public required init(tag: String?) {
         super.init(tag: tag)
         
@@ -78,9 +78,7 @@ public final class MyImageCell: Cell<UIImage>, CellType {
     public override func update() {
         super.update()
         
-        if let image = row.value {
-            myImageView.image = image
-        }
+        myImageView.image = row.value
         myLabel.text = row.title
         textLabel?.text = nil
         detailTextLabel?.text = nil
